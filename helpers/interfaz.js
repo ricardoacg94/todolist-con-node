@@ -1,38 +1,39 @@
 import inquirer from "inquirer";
+import colors from "colors";
 
 const interfazMenu = async () => {
   const answer = await inquirer.prompt([
     {
       type: "list",
       name: "opcion",
-      message: "Que accion desea realizar?",
+      message: "Que accion desea realizar?\n",
       choices: [
         {
-          name: "Crear Tarea",
+          name: `${`1.`.green} Crear Tarea`,
           value: 1,
         },
         {
-          name: "Listar Tareas",
+          name: `${`2.`.green} Listar Tareas`,
           value: 2,
         },
         {
-          name: "Tareas Completadas",
+          name: `${`3.`.green} Tareas Completadas`,
           value: 3,
         },
         {
-          name: "Tareas Pendientes",
+          name: `${`4.`.green} Tareas Pendientes`,
           value: 4,
         },
         {
-          name: "Completar Tarea",
+          name: `${`5.`.green} Completar Tarea`,
           value: 5,
         },
         {
-          name: "Eliminar Tarea",
+          name: `${`6.`.green} Eliminar Tarea`,
           value: 6,
         },
         {
-          name: "Salir",
+          name: `${`0.`.green} Salir`,
           value: 0,
         },
       ],
@@ -47,7 +48,7 @@ const interfazCreacionTarea = async () => {
     {
       type: "input",
       name: "tarea",
-      message: "Digita la tarea que deseas agregar",
+      message: "Digita la tarea que deseas agregar\n",
     },
   ];
 
@@ -63,7 +64,7 @@ const pausa = async () => {
     {
       type: "input",
       name: "opcion",
-      message: "Presione Enter para continuar",
+      message: `Presione ${`ENTER`.green} para continuar`,
       choices: [],
     },
   ]);
@@ -77,11 +78,11 @@ const interfazListaTareas = async (tareas = []) => {
     {
       type: "list",
       name: "opcion",
-      message: "Lista de Tareas?",
+      message: "Lista de Tareas",
       choices: tareas.map((tarea) => ({
         name: tarea.completadoEn
-          ? `${tarea.desc} ::Completada`
-          : `${tarea.desc} ::Pendiente`,
+          ? `${tarea.desc} ${`::Completada`.green}`
+          : `${tarea.desc} ${`::Pendiente`.red}`,
       })),
     },
   ]);
@@ -94,12 +95,12 @@ const listaTareasCompletadasPendientes = async (status, tareas = []) => {
   if (status) {
     const newArray = tareas.filter((tarea) => tarea.completadoEn == true);
     newArray.forEach((tarea) => {
-      opciones.push(`${tarea.desc}:: Completada `);
+      opciones.push(`${tarea.desc} ${`::Completada`.green}`);
     });
   } else {
     const newArray = tareas.filter((tarea) => tarea.completadoEn == null);
     newArray.forEach((tarea) => {
-      opciones.push(`${tarea.desc}:: Pendiente`);
+      opciones.push(`${tarea.desc} ${`::Pendiente`.red}`);
     });
   }
   const listaTareas = await inquirer.prompt([
@@ -144,7 +145,9 @@ const interfazEliminarTarea = async (tareas) => {
       choices: tareas.map((tarea) => {
         return {
           value: tarea.id,
-          name: tarea.desc,
+          name: tarea.completadoEn
+            ? `${tarea.desc} ${`::Completada`.green}`
+            : `${tarea.desc} ${`::Pendiente`.red}`,
         };
       }),
     },

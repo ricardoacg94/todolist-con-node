@@ -28,27 +28,62 @@ const main = async () => {
     switch (opcion) {
       case 1:
         const opt = await interfazCreacionTarea();
-        listado.crearTarea(opt);
-        console.log("Tarea Creada");
-        guardarinfo(listado.listaTareas);
-        await pausa();
+        if (opt.length == 0) {
+          console.log("Debe rellenar el campo");
+          await pausa();
+        } else {
+          listado.crearTarea(opt).then(() => {
+            guardarinfo(listado.listaTareas);
+          });
+          console.log("Tarea Creada");
+
+          await pausa();
+        }
 
         break;
 
       case 2:
-        await interfazListaTareas(listado.listaTareas);
-        await pausa();
+        if (listado.listaTareas.length == 0) {
+          console.log("No hay pendientes tareas para desplegar");
+          await pausa();
+        } else {
+          await interfazListaTareas(listado.listaTareas);
+          await pausa();
+        }
+
         break;
       case 3:
-        await listaTareasCompletadasPendientes(true, listado.listaTareas);
-        await pausa();
+        if (
+          listado.listaTareas.filter((tarea) => tarea.completadoEn == true)
+            .length == 0
+        ) {
+          console.log("No hay Completadas tareas para desplegar");
+          await pausa();
+        } else {
+          await listaTareasCompletadasPendientes(true, listado.listaTareas);
+          await pausa();
+        }
+
         break;
       case 4:
-        await listaTareasCompletadasPendientes(false, listado.listaTareas);
-        await pausa();
+        if (
+          listado.listaTareas.filter((tarea) => tarea.completadoEn == null)
+            .length == 0
+        ) {
+          console.log("No hay pendientes tareas para desplegar");
+          await pausa();
+        } else {
+          await listaTareasCompletadasPendientes(false, listado.listaTareas);
+          await pausa();
+        }
+
         break;
       case 5:
-        const id = await interfazCompletarTarea(listado.listaTareas);
+        const arrFiltrado = listado.listaTareas.filter(
+          (tarea) => tarea.completadoEn == null
+        );
+
+        const id = await interfazCompletarTarea(arrFiltrado);
         listado.completarTareas(id);
         guardarinfo(listado.listaTareas);
 
@@ -57,7 +92,7 @@ const main = async () => {
       case 6:
         const ids = await interfazEliminarTarea(listado.listaTareas);
 
-        listado.eliminarTarea(ids);
+        await listado.eliminarTarea(ids);
         guardarinfo(listado.listaTareas);
 
         await pausa();

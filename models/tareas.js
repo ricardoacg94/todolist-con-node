@@ -10,17 +10,31 @@ class Tareas {
   };
 
   crearTarea = (desc) => {
-    const tarea = new Tarea(desc);
-    this.listaTareas.push(tarea);
-  };
-
-  eliminarTarea = (ids) => {
-    ids.forEach((id) => {
-      this.listaTareas = this.listaTareas.filter((tarea) => tarea.id != id);
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const tarea = new Tarea(desc);
+        resolve(this.listaTareas.push(tarea));
+      }, 3000);
+    }).then((response) => {
+      console.log(response);
     });
   };
 
-  completarTareas = (ids) => {
+  eliminarTarea = (ids) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        ids.forEach((id) => {
+          resolve(
+            (this.listaTareas = this.listaTareas.filter(
+              (tarea) => tarea.id != id
+            ))
+          );
+        });
+      }, 3000);
+    });
+  };
+
+  completarTareas = async (ids) => {
     ids.forEach((id) => {
       this.listaTareas.forEach((tarea) => {
         if (id == tarea.id) {
